@@ -1,4 +1,15 @@
-
+@import "tailwindcss";
 body {
-  background-image: url("/Hero-Background-notecode.svg");
+  font-family: "Outfit", sans-serif;
+}
+
+@layer base {
+  .bg-hero-background {
+    background-image: url("/Hero-Background-notecode.svg");
+  }
+
+  .bg-black-editor {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 30 30 / var(--tw-bg-opacity));
+  }
 }
