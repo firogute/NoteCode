@@ -3,6 +3,13 @@ import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector.jsx";
 import { DEFAULT_CODE_SNIPPETS } from "../constants.js";
 import ShareButton from "./ShareButton.jsx";
+import { supabase } from "../supabaseClient.js";
+
+function generateHexId(length = 24) {
+  return [...crypto.getRandomValues(new Uint8Array(length / 2))]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
 const ThemeSelector = ({ theme, handleThemeChange }) => {
   return (
@@ -43,10 +50,43 @@ const CodeEditor = () => {
     setLanguage(language);
     setCode(DEFAULT_CODE_SNIPPETS[language]);
   };
-  const handlerClick = () => {
-    const value = editorRef.current.getValue();
-    navigator.clipboard.writeText(value);
-    alert("Code has been copied to clipboard.");
+  const handlerClick = async () => {
+    const shortId = generateHexId();
+    console.log(shortId);
+    if (editorRef.current) {
+      const code = editorRef.current.getValue(); // Get the code from the editor
+      console.log("Code to save:", code); // Debugging
+
+      try {
+        // Save the code to Supabase
+        const { data, error } = await supabase
+          .from("codes")
+          .insert([
+            {
+              id: shortId,
+              code: code,
+              language: language,
+              theme: theme,
+            },
+          ])
+          .select();
+
+        if (error) {
+          throw error;
+        }
+
+        console.log("Code saved successfully:", data);
+        alert("Code saved and copied to clipboard!");
+
+        navigator.clipboard.writeText(code);
+      } catch (error) {
+        console.error("Failed to save code:", error);
+        alert("Failed to save code.");
+      }
+    } else {
+      console.error("Editor reference is not available.");
+      alert("Editor is not ready.");
+    }
   };
 
   return (
