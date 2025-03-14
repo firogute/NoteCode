@@ -16,7 +16,7 @@ const ThemeSelector = ({ theme, handleThemeChange }) => {
     <div className="theme-selector relative flex gap-6">
       <select
         id="language-select"
-        className="bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40"
+        className="bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40 cursor-pointer"
         value={theme}
         onChange={handleThemeChange}
       >
@@ -37,7 +37,8 @@ const CodeEditor = () => {
   const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
-
+  const [isEdited, setIsEdited] = useState(true);
+  const [isShared, setIsShared] = useState(false);
   const [savedLink, setSavedLink] = useState(null);
 
   const onMount = (editor) => {
@@ -60,6 +61,8 @@ const CodeEditor = () => {
       const code = editorRef.current.getValue();
       setLoading(true);
 
+      setIsEdited(true);
+
       try {
         const { data, error } = await supabase
           .from("codes")
@@ -76,9 +79,9 @@ const CodeEditor = () => {
         if (error) {
           throw error;
         }
-        const generatedLink = `${window.location.origin}/code/${shortId}`;
+        const generatedLink = `${window.location.origin}/${shortId}`;
         setSavedLink(generatedLink);
-
+        setIsShared(true);
         navigator.clipboard.writeText(code);
       } catch (error) {
         console.error("Failed to save code:", error);
@@ -95,6 +98,13 @@ const CodeEditor = () => {
       navigator.clipboard.writeText(savedLink);
     }
   };
+  const handleCodeChange = (value) => {
+    setCode(value);
+    setIsEdited(true);
+    if (isShared) {
+      setIsShared(false);
+    }
+  };
 
   return (
     <>
@@ -104,7 +114,7 @@ const CodeEditor = () => {
         language={language}
         onMount={onMount}
         value={code}
-        onChange={(value) => setCode(value)}
+        onChange={handleCodeChange}
       />
       <div className="w-full flex sm:flex-row gap-4 flex-col items-center lg:items-center justify-between pt-4">
         <div className="w-full lg:w-auto flex gap-4 sm:flex-col lg:flex-row">
@@ -118,7 +128,7 @@ const CodeEditor = () => {
         <div className="w-full lg:w-auto flex lg:flex-row flex-col gap-4 items-center">
           {savedLink && (
             <button
-              className="gap-2 px-4 py-4 text-success border-success border hover:opacity-80 transition text-green-400 z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 border-medium px-unit-6 min-w-unit-24 h-unit-12 text-medium gap-unit-3 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-transparent border-success text-success data-[hover=true]:opacity-hover w-full lg:w-fit"
+              className="gap-2 px-4 py-4 text-success border-success border hover:opacity-80 transition text-green-400 z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 border-medium px-unit-6 min-w-unit-24 h-unit-12 text-medium gap-unit-3 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-transparent border-success text-success data-[hover=true]:opacity-hover w-full lg:w-fit cursor-pointer"
               onClick={handleCopyClick}
             >
               <svg
@@ -136,7 +146,11 @@ const CodeEditor = () => {
               {savedLink.replace(window.location.origin, "...")}
             </button>
           )}
-          <ShareButton onClick={handlerClick} loading={loading} />
+          <ShareButton
+            onClick={handlerClick}
+            loading={loading}
+            disabled={isShared || loading}
+          />
         </div>
       </div>
     </>
