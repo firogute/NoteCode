@@ -9,15 +9,15 @@ const LanguageSelector = ({ language, onSelect }) => {
         id="language-select"
         value={language}
         onChange={(e) => onSelect(e.target.value)}
-        className="bg-[#CED6E1] text-black rounded-4xl pl-4 pr-10 py-2 appearance-none focus:outline-none"
+        className="bg-[#364153]  text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40"
       >
         {languages.map(([languageKey, version]) => (
           <option key={languageKey} value={languageKey}>
-            {languageKey} ({version})
+            {languageKey}
           </option>
         ))}
       </select>
-      <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+      <div className="absolute inset-y-0 right-4 flex items-center">
         <img src="/down arrow.svg" alt="down" className="h-4 w-4" />
       </div>
     </div>

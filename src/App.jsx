@@ -6,7 +6,7 @@ import LanguageSelector from "./components/LanguageSelector";
 function App() {
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-between py-14 px-3 bg-hero-background bg-cover bg-no-repeat bg-center">
+      <main className="flex flex-col items-center justify-between py-14 px-3 bg-hero-background bg-cover bg-no-repeat bg-center">
         <header className="w-full flex flex-col items-center justify-between mb-10">
           <a href="/">
             <img
@@ -23,7 +23,7 @@ function App() {
             Your Code easily
           </p>
         </header>
-        <div className="editor w-full text-white p-4 rounded-2xl bg-black-editor max-w-[56rem]">
+        <div className="editor w-full text-white p-6 rounded-2xl bg-black-editor max-w-[56rem]">
           <CodeEditor />
         </div>
       </main>

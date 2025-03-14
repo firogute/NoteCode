@@ -16,29 +16,25 @@ export const LANGUAGE_VERSIONS = {
 };
 
 export const DEFAULT_CODE_SNIPPETS = {
-  javascript: `// JavaScript: Basic Function
-function greet(name) {
+  javascript: `function greet(name) {
   return "Hello, " + name + "!";
 }
 
 console.log(greet("World"));`,
 
-  typescript: `// TypeScript: Typed Function
-function greet(name: string): string {
+  typescript: `function greet(name: string): string {
   return "Hello, " + name + "!";
 }
 
 console.log(greet("World"));`,
 
-  python: `# Python: Function with Docstring
-def greet(name):
+  python: `def greet(name):
     """Greets a person by name."""
     return f"Hello, {name}!"
 
 print(greet("World"))`,
 
-  java: `// Java: Basic Class and Method
-public class Main {
+  java: `public class Main {
     public static void main(String[] args) {
         System.out.println(greet("World"));
     }
@@ -48,8 +44,7 @@ public class Main {
     }
 }`,
 
-  cpp: `// C++: Basic Program
-#include <iostream>
+  cpp: `#include <iostream>
 #include <string>
 
 std::string greet(std::string name) {
@@ -61,8 +56,7 @@ int main() {
     return 0;
 }`,
 
-  csharp: `// C#: Basic Program
-using System;
+  csharp: `using System;
 
 class Program {
     static void Main() {
@@ -75,7 +69,6 @@ class Program {
 }`,
 
   php: `<?php
-// PHP: Function with Echo
 function greet($name) {
     return "Hello, " . $name . "!";
 }
@@ -83,8 +76,7 @@ function greet($name) {
 echo greet("World");
 ?>`,
 
-  html: `<!-- HTML: Basic Page Structure -->
-<!DOCTYPE html>
+  html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -97,8 +89,7 @@ echo greet("World");
 </body>
 </html>`,
 
-  css: `/* CSS: Basic Styling */
-body {
+  css: `body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     text-align: center;
@@ -109,15 +100,13 @@ h1 {
     color: #333;
 }`,
 
-  ruby: `# Ruby: Method Definition
-def greet(name)
+  ruby: `def greet(name)
   "Hello, #{name}!"
 end
 
 puts greet("World")`,
 
-  go: `// Go: Basic Program
-package main
+  go: `package main
 
 import "fmt"
 
@@ -129,8 +118,7 @@ func main() {
     fmt.Println(greet("World"))
 }`,
 
-  rust: `// Rust: Basic Program
-fn greet(name: &str) -> String {
+  rust: `fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
 }
 
@@ -138,8 +126,7 @@ fn main() {
     println!("{}", greet("World"));
 }`,
 
-  kotlin: `// Kotlin: Basic Function
-fun greet(name: String): String {
+  kotlin: `fun greet(name: String): String {
     return "Hello, $name!"
 }
 
@@ -147,21 +134,18 @@ fun main() {
     println(greet("World"))
 }`,
 
-  swift: `// Swift: Basic Function
-func greet(name: String) -> String {
+  swift: `func greet(name: String) -> String {
     return "Hello, \\(name)!"
 }
 
 print(greet(name: "World"))`,
 
-  bash: `# Bash: Simple Script
-#!/bin/bash
+  bash: `#!/bin/bash
 
 name="World"
 echo "Hello, $name!"`,
 
-  sql: `-- SQL: Create Table and Insert Data
-CREATE TABLE users (
+  sql: `CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL
 );

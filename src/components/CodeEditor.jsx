@@ -16,7 +16,7 @@ const ThemeSelector = ({ theme, handleThemeChange }) => {
     <div className="theme-selector relative flex gap-6">
       <select
         id="language-select"
-        className="bg-[#CED6E1] text-black rounded-4xl pl-4 pr-10 py-2 appearance-none focus:outline-none"
+        className="bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40"
         value={theme}
         onChange={handleThemeChange}
       >
@@ -38,6 +38,8 @@ const CodeEditor = () => {
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
 
+  const [savedLink, setSavedLink] = useState(null);
+
   const onMount = (editor) => {
     editorRef.current = editor;
     editor.focus();
@@ -56,7 +58,6 @@ const CodeEditor = () => {
     console.log(shortId);
     if (editorRef.current) {
       const code = editorRef.current.getValue();
-      // console.log("Code to save:", code);
       setLoading(true);
 
       try {
@@ -75,6 +76,8 @@ const CodeEditor = () => {
         if (error) {
           throw error;
         }
+        const generatedLink = `${window.location.origin}/code/${shortId}`;
+        setSavedLink(generatedLink);
 
         navigator.clipboard.writeText(code);
       } catch (error) {
@@ -87,20 +90,54 @@ const CodeEditor = () => {
     }
   };
 
+  const handleCopyClick = () => {
+    if (savedLink) {
+      navigator.clipboard.writeText(savedLink);
+    }
+  };
+
   return (
     <>
       <Editor
-        height="60vh"
+        height="80vh"
         theme={theme}
         language={language}
         onMount={onMount}
         value={code}
         onChange={(value) => setCode(value)}
       />
-      <div className="flex justify-center items-center p-4 gap-4">
-        <LanguageSelector language={language} onSelect={handleLanguageChange} />
-        <ThemeSelector handleThemeChange={handleThemeChange} />
-        <ShareButton onClick={handlerClick} loading={loading} />
+      <div className="w-full flex sm:flex-row gap-4 flex-col items-center lg:items-center justify-between pt-4">
+        <div className="w-full lg:w-auto flex gap-4 sm:flex-col lg:flex-row">
+          <LanguageSelector
+            language={language}
+            onSelect={handleLanguageChange}
+          />
+          <ThemeSelector handleThemeChange={handleThemeChange} />
+        </div>
+
+        <div className="w-full lg:w-auto flex lg:flex-row flex-col gap-4 items-center">
+          {savedLink && (
+            <button
+              className="gap-2 px-4 py-4 text-success border-success border hover:opacity-80 transition text-green-400 z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 border-medium px-unit-6 min-w-unit-24 h-unit-12 text-medium gap-unit-3 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-transparent border-success text-success data-[hover=true]:opacity-hover w-full lg:w-fit"
+              onClick={handleCopyClick}
+            >
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="20"
+                role="presentation"
+                viewBox="0 0 24 24"
+                width="20"
+                fill="currentColor"
+              >
+                <path d="M8.465,11.293c1.133-1.133,3.109-1.133,4.242,0L13.414,12l1.414-1.414l-0.707-0.707c-0.943-0.944-2.199-1.465-3.535-1.465 S7.994,8.935,7.051,9.879L4.929,12c-1.948,1.949-1.948,5.122,0,7.071c0.975,0.975,2.255,1.462,3.535,1.462 c1.281,0,2.562-0.487,3.536-1.462l0.707-0.707l-1.414-1.414l-0.707,0.707c-1.17,1.167-3.073,1.169-4.243,0 c-1.169-1.17-1.169-3.073,0-4.243L8.465,11.293z"></path>
+                <path d="M12,4.929l-0.707,0.707l1.414,1.414l0.707-0.707c1.169-1.167,3.072-1.169,4.243,0c1.169,1.17,1.169,3.073,0,4.243 l-2.122,2.121c-1.133,1.133-3.109,1.133-4.242,0L10.586,12l-1.414,1.414l0.707,0.707c0.943,0.944,2.199,1.465,3.535,1.465 s2.592-0.521,3.535-1.465L19.071,12c1.948-1.949,1.948-5.122,0-7.071C17.121,2.979,13.948,2.98,12,4.929z"></path>
+              </svg>
+              {savedLink.replace(window.location.origin, "...")}
+            </button>
+          )}
+          <ShareButton onClick={handlerClick} loading={loading} />
+        </div>
       </div>
     </>
   );
