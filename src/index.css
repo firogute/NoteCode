@@ -5,7 +5,7 @@ body {
 
 @layer base {
   .bg-hero-background {
-    background-image: url("/Hero-Background-notecode.svg");
+    background: url("/Hero-Background-notecode.svg") #804be7;
   }
 
   .bg-black-editor {

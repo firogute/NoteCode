@@ -36,6 +36,7 @@ const CodeEditor = () => {
   const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.html);
   const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
+  const [loading, setLoading] = useState(false);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -54,11 +55,11 @@ const CodeEditor = () => {
     const shortId = generateHexId();
     console.log(shortId);
     if (editorRef.current) {
-      const code = editorRef.current.getValue(); // Get the code from the editor
-      console.log("Code to save:", code); // Debugging
+      const code = editorRef.current.getValue();
+      // console.log("Code to save:", code);
+      setLoading(true);
 
       try {
-        // Save the code to Supabase
         const { data, error } = await supabase
           .from("codes")
           .insert([
@@ -75,17 +76,14 @@ const CodeEditor = () => {
           throw error;
         }
 
-        console.log("Code saved successfully:", data);
-        alert("Code saved and copied to clipboard!");
-
         navigator.clipboard.writeText(code);
       } catch (error) {
         console.error("Failed to save code:", error);
-        alert("Failed to save code.");
+      } finally {
+        setLoading(false);
       }
     } else {
       console.error("Editor reference is not available.");
-      alert("Editor is not ready.");
     }
   };
 
@@ -102,7 +100,7 @@ const CodeEditor = () => {
       <div className="flex justify-center items-center p-4 gap-4">
         <LanguageSelector language={language} onSelect={handleLanguageChange} />
         <ThemeSelector handleThemeChange={handleThemeChange} />
-        <ShareButton onClick={handlerClick} />
+        <ShareButton onClick={handlerClick} loading={loading} />
       </div>
     </>
   );
