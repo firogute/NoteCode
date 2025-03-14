@@ -10,7 +10,7 @@ const ThemeSelector = ({ theme, handleThemeChange }) => {
       <select
         id="language-select"
         className="bg-[#CED6E1] text-black rounded-4xl pl-4 pr-10 py-2 appearance-none focus:outline-none"
-        value={theme} 
+        value={theme}
         onChange={handleThemeChange}
       >
         <option value="vs-dark">Dark</option>
@@ -26,8 +26,8 @@ const ThemeSelector = ({ theme, handleThemeChange }) => {
 };
 const CodeEditor = () => {
   const editorRef = useRef();
-  const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.javascript);
-  const [language, setLanguage] = useState("javascript");
+  const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.html);
+  const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
 
   const onMount = (editor) => {
@@ -43,6 +43,11 @@ const CodeEditor = () => {
     setLanguage(language);
     setCode(DEFAULT_CODE_SNIPPETS[language]);
   };
+  const handlerClick = () => {
+    const value = editorRef.current.getValue();
+    navigator.clipboard.writeText(value);
+    alert("Code has been copied to clipboard.");
+  };
 
   return (
     <>
@@ -57,7 +62,7 @@ const CodeEditor = () => {
       <div className="flex justify-center items-center p-4 gap-4">
         <LanguageSelector language={language} onSelect={handleLanguageChange} />
         <ThemeSelector handleThemeChange={handleThemeChange} />
-        <ShareButton />
+        <ShareButton onClick={handlerClick} />
       </div>
     </>
   );

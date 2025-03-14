@@ -93,6 +93,7 @@ echo greet("World");
 </head>
 <body>
     <h1>Hello, World!</h1>
+    <p>Copy and paste here the code you want to share.</p>
 </body>
 </html>`,
 
