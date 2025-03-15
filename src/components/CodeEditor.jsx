@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import LanguageSelector from "./LanguageSelector.jsx";
 import { DEFAULT_CODE_SNIPPETS } from "../constants.js";
@@ -32,14 +33,38 @@ const ThemeSelector = ({ theme, handleThemeChange }) => {
   );
 };
 const CodeEditor = () => {
+  const { id } = useParams();
   const editorRef = useRef();
   const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.html);
   const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
-  const [isEdited, setIsEdited] = useState(true);
   const [isShared, setIsShared] = useState(false);
   const [savedLink, setSavedLink] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      fetchCodeSnippet(id);
+    }
+  }, [id]);
+
+  const fetchCodeSnippet = async (snippetId) => {
+    const { data, error } = await supabase
+      .from("codes")
+      .select("*")
+      .eq("id", snippetId)
+      .single();
+
+    if (error) {
+      console.error("Snippet not found:", error);
+      return;
+    } else {
+      setCode(data.code);
+      setLanguage(data.language);
+      setTheme(data.theme);
+      setIsShared(true);
+    }
+  };
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -56,12 +81,10 @@ const CodeEditor = () => {
   };
   const handlerClick = async () => {
     const shortId = generateHexId();
-    console.log(shortId);
+    // console.log(shortId);
     if (editorRef.current) {
       const code = editorRef.current.getValue();
       setLoading(true);
-
-      setIsEdited(true);
 
       try {
         const { data, error } = await supabase
@@ -100,7 +123,6 @@ const CodeEditor = () => {
   };
   const handleCodeChange = (value) => {
     setCode(value);
-    setIsEdited(true);
     if (isShared) {
       setIsShared(false);
     }

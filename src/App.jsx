@@ -1,11 +1,11 @@
 // import { useState } from "react";
 import "./App.css";
 import CodeEditor from "./components/CodeEditor";
-import LanguageSelector from "./components/LanguageSelector";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <>
+    <Router>
       <main className="flex flex-col items-center justify-between py-14 px-3 bg-hero-background bg-cover bg-no-repeat bg-center">
         <header className="w-full flex flex-col items-center justify-between mb-10">
           <a href="/">
@@ -24,10 +24,16 @@ function App() {
           </p>
         </header>
         <div className="editor w-full text-white p-6 rounded-2xl bg-black-editor max-w-[56rem]">
-          <CodeEditor />
+          <Routes>
+            {/* Home Route - New Code Editor */}
+            <Route path="/" element={<CodeEditor />} />
+
+            {/* Route for viewing shared snippets */}
+            <Route path="/:id" element={<CodeEditor />} />
+          </Routes>
         </div>
       </main>
-    </>
+    </Router>
   );
 }
 
