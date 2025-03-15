@@ -14,13 +14,15 @@ function generateHexId(length = 24) {
 
 const ThemeSelector = ({ theme, handleThemeChange, disabled }) => {
   return (
-    <div className="theme-selector relative flex gap-6">
+    <div
+      className={`theme-selector relative flex gap-6 ${
+        disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+      }`}
+    >
       <select
         id="language-select"
         className={`bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40 ${
-          disabled
-            ? "opacity-50 pointer-events-none cursor-not-allowed"
-            : "cursor-pointer"
+          disabled ? "opacity-70 pointer-events-none" : ""
         }`}
         value={theme}
         onChange={handleThemeChange}
@@ -40,11 +42,15 @@ const CodeEditor = () => {
   const { id } = useParams();
   const editorRef = useRef();
   const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.html);
+
+  const [originalCode, setOriginalCode] = useState(null);
+  const [hasChanged, setHasChanged] = useState(false);
   const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [isShared2, setIsShared2] = useState(false);
+
   const [savedLink, setSavedLink] = useState(null);
 
   useEffect(() => {
@@ -70,6 +76,7 @@ const CodeEditor = () => {
       setTheme(data.theme);
       setIsShared(true);
       setIsShared2(true);
+      setOriginalCode(data.code);
     }
   };
 
@@ -130,6 +137,11 @@ const CodeEditor = () => {
   };
   const handleCodeChange = (value) => {
     setCode(value);
+    if (originalCode && value !== originalCode) {
+      setHasChanged(true);
+    } else {
+      setHasChanged(false);
+    }
     if (isShared) {
       setIsShared(false);
     }
@@ -182,7 +194,7 @@ const CodeEditor = () => {
           <ShareButton
             onClick={handlerClick}
             loading={loading}
-            disabled={isShared || loading}
+            disabled={!hasChanged || isShared || loading}
           />
         </div>
       </div>
