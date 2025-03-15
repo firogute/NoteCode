@@ -194,6 +194,13 @@ const CodeEditor = () => {
         onMount={onMount}
         value={code}
         onChange={handleCodeChange}
+        options={{
+          wordWrap: "on",
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+
+          wrappingIndent: "same",
+        }}
       />
       <div className="w-full flex sm:flex-row gap-4 flex-col items-center lg:items-center justify-between pt-4">
         <div className="w-full lg:w-auto flex gap-4 sm:flex-col lg:flex-row">
