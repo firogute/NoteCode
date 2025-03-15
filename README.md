@@ -1,12 +1,34 @@
-# React + Vite
+# CNotecode
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimal online code editor with syntax highlighting, theming, and a sharing feature using Supabase.
 
-Currently, two official plugins are available:
+## Features
+- 🚀 Syntax highlighting with **Monaco Editor**
+- 🎨 Dark and Light theme selection
+- 🏷️ Multi-language support
+- 🔗 Unique shareable links for code snippets
+- 📋 Clipboard copy functionality
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **Frontend:** React, Monaco Editor
+- **Backend & Database:** Supabase (PostgreSQL)
+- **Deployment:** Vercel
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Clone the repo
+```sh
+git clone https://github.com/firogute/NoteCode.git
+cd NoteCode
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+### 3. Start the React application:
+
+```bash
+npm run dev
+```
