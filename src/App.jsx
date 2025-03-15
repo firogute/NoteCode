@@ -3,10 +3,11 @@ import "./App.css";
 import CodeEditor from "./components/CodeEditor";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+
 function App() {
   return (
     <Router>
-      <main className="flex flex-col items-center justify-between py-14 px-3 bg-hero-background bg-cover bg-no-repeat bg-center">
+      <main className="relative flex flex-col items-center justify-between py-14 px-3 bg-hero-background bg-cover bg-no-repeat bg-center">
         <header className="w-full flex flex-col items-center justify-between mb-10">
           <a href="/">
             <img
@@ -25,10 +26,7 @@ function App() {
         </header>
         <div className="editor w-full text-white p-6 rounded-2xl bg-black-editor max-w-[56rem]">
           <Routes>
-            {/* Home Route - New Code Editor */}
             <Route path="/" element={<CodeEditor />} />
-
-            {/* Route for viewing shared snippets */}
             <Route path="/:id" element={<CodeEditor />} />
           </Routes>
         </div>

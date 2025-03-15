@@ -12,6 +12,20 @@ function generateHexId(length = 24) {
     .join("");
 }
 
+const Message = ({ message, progress }) => {
+  return (
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg flex flex-col items-center">
+      <p className="mb-2">{message}</p>
+      <div className="w-48 h-2 bg-gray-700 rounded-full">
+        <div
+          className="h-full bg-green-400 rounded-full transition-all"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 const ThemeSelector = ({ theme, handleThemeChange, disabled }) => {
   return (
     <div
@@ -44,7 +58,7 @@ const CodeEditor = () => {
   const [code, setCode] = useState(DEFAULT_CODE_SNIPPETS.html);
 
   const [originalCode, setOriginalCode] = useState(null);
-  const [hasChanged, setHasChanged] = useState(false);
+  const [hasChanged, setHasChanged] = useState(!id);
   const [language, setLanguage] = useState("html");
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
@@ -52,6 +66,9 @@ const CodeEditor = () => {
   const [isShared2, setIsShared2] = useState(false);
 
   const [savedLink, setSavedLink] = useState(null);
+  const [showMessage, setShowMessage] = useState(false);
+  const [progress, setProgress] = useState(100);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -120,10 +137,14 @@ const CodeEditor = () => {
         setSavedLink(generatedLink);
         setIsShared(true);
         navigator.clipboard.writeText(code);
+
+        window.location.href = generatedLink;
       } catch (error) {
         console.error("Failed to save code:", error);
       } finally {
         setLoading(false);
+
+        setIsShared2(true);
       }
     } else {
       console.error("Editor reference is not available.");
@@ -131,13 +152,30 @@ const CodeEditor = () => {
   };
 
   const handleCopyClick = () => {
-    if (savedLink) {
-      navigator.clipboard.writeText(savedLink);
-    }
+    const fullLink = savedLink || `${window.location.origin}/${id}`;
+    navigator.clipboard.writeText(fullLink);
+
+    setMessage("Link copied to clipboard!");
+    setShowMessage(true);
+    setProgress(100);
+
+    const interval = setInterval(() => {
+      setProgress((progress) => {
+        if (progress <= 0) {
+          clearInterval(interval);
+          setShowMessage(false);
+          return 0;
+        }
+        return progress - 1;
+      });
+    }, 30);
   };
+
   const handleCodeChange = (value) => {
     setCode(value);
     if (originalCode && value !== originalCode) {
+      setHasChanged(true);
+    } else if (!id) {
       setHasChanged(true);
     } else {
       setHasChanged(false);
@@ -171,7 +209,7 @@ const CodeEditor = () => {
         </div>
 
         <div className="w-full lg:w-auto flex lg:flex-row flex-col gap-4 items-center">
-          {savedLink && (
+          {(savedLink || id) && (
             <button
               className="gap-2 px-4 py-4 text-success border-success border hover:opacity-80 transition text-green-400 z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 border-medium px-unit-6 min-w-unit-24 h-unit-12 text-medium gap-unit-3 rounded-full [&>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-transparent border-success text-success data-[hover=true]:opacity-hover w-full lg:w-fit cursor-pointer"
               onClick={handleCopyClick}
@@ -188,7 +226,9 @@ const CodeEditor = () => {
                 <path d="M8.465,11.293c1.133-1.133,3.109-1.133,4.242,0L13.414,12l1.414-1.414l-0.707-0.707c-0.943-0.944-2.199-1.465-3.535-1.465 S7.994,8.935,7.051,9.879L4.929,12c-1.948,1.949-1.948,5.122,0,7.071c0.975,0.975,2.255,1.462,3.535,1.462 c1.281,0,2.562-0.487,3.536-1.462l0.707-0.707l-1.414-1.414l-0.707,0.707c-1.17,1.167-3.073,1.169-4.243,0 c-1.169-1.17-1.169-3.073,0-4.243L8.465,11.293z"></path>
                 <path d="M12,4.929l-0.707,0.707l1.414,1.414l0.707-0.707c1.169-1.167,3.072-1.169,4.243,0c1.169,1.17,1.169,3.073,0,4.243 l-2.122,2.121c-1.133,1.133-3.109,1.133-4.242,0L10.586,12l-1.414,1.414l0.707,0.707c0.943,0.944,2.199,1.465,3.535,1.465 s2.592-0.521,3.535-1.465L19.071,12c1.948-1.949,1.948-5.122,0-7.071C17.121,2.979,13.948,2.98,12,4.929z"></path>
               </svg>
-              {savedLink.replace(window.location.origin, "...")}
+              {savedLink
+                ? savedLink.replace(window.location.origin, ".../")
+                : ".../" + id}
             </button>
           )}
           <ShareButton
@@ -198,6 +238,7 @@ const CodeEditor = () => {
           />
         </div>
       </div>
+      {showMessage && <Message message={message} progress={progress} />}
     </>
   );
 };
