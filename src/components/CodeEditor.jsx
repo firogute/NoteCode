@@ -12,12 +12,16 @@ function generateHexId(length = 24) {
     .join("");
 }
 
-const ThemeSelector = ({ theme, handleThemeChange }) => {
+const ThemeSelector = ({ theme, handleThemeChange, disabled }) => {
   return (
     <div className="theme-selector relative flex gap-6">
       <select
         id="language-select"
-        className="bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40 cursor-pointer"
+        className={`bg-[#364153] text-gray-300 rounded-2xl pl-4 pr-10 py-4 appearance-none focus:outline-none uppercase group inline-flex flex-col transition-background motion-reduce:transition-none !duration-150 w-full lg:w-40 ${
+          disabled
+            ? "opacity-50 pointer-events-none cursor-not-allowed"
+            : "cursor-pointer"
+        }`}
         value={theme}
         onChange={handleThemeChange}
       >
@@ -40,6 +44,7 @@ const CodeEditor = () => {
   const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
   const [isShared, setIsShared] = useState(false);
+  const [isShared2, setIsShared2] = useState(false);
   const [savedLink, setSavedLink] = useState(null);
 
   useEffect(() => {
@@ -59,10 +64,12 @@ const CodeEditor = () => {
       console.error("Snippet not found:", error);
       return;
     } else {
+      // console.log("Fetched data:", data);
       setCode(data.code);
       setLanguage(data.language);
       setTheme(data.theme);
       setIsShared(true);
+      setIsShared2(true);
     }
   };
 
@@ -143,8 +150,12 @@ const CodeEditor = () => {
           <LanguageSelector
             language={language}
             onSelect={handleLanguageChange}
+            disabled={isShared2}
           />
-          <ThemeSelector handleThemeChange={handleThemeChange} />
+          <ThemeSelector
+            handleThemeChange={handleThemeChange}
+            disabled={isShared2}
+          />
         </div>
 
         <div className="w-full lg:w-auto flex lg:flex-row flex-col gap-4 items-center">
