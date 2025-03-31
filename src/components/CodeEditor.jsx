@@ -41,8 +41,8 @@ const ThemeSelector = ({ theme, handleThemeChange, disabled }) => {
         value={theme}
         onChange={handleThemeChange}
       >
-        <option value="hc-light">Light</option>
         <option value="vs-dark">Dark</option>
+        <option value="hc-light">Light</option>
       </select>
 
       {/* Custom Arrow */}
@@ -60,7 +60,7 @@ const CodeEditor = () => {
   const [originalCode, setOriginalCode] = useState(null);
   const [hasChanged, setHasChanged] = useState(!id);
   const [language, setLanguage] = useState("html");
-  const [theme, setTheme] = useState("hc-light");
+  const [theme, setTheme] = useState("vs-dark");
   const [loading, setLoading] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [isShared2, setIsShared2] = useState(false);
